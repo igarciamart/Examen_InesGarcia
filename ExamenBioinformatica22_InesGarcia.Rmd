@@ -1,0 +1,147 @@
+---
+title: "ExamenBioinformatica22_InesGarcia"
+author: "Ines Garcia"
+date: "31/1/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(nycflights13)
+library(tidyverse)
+library (ggplot2)
+weather <- nycflights13::weather
+```
+
+#### 1. Comandos de Linux. Tengo un fichero llamado genes.txt con 3 columnas. ¿Qué comando utilizarías para saber?
+##### a. ¿Cuántas palabras hay en el fichero?
+cat gene.txt | wc
+
+##### b. ¿Cómo cambiarías todos los tabulados por guiones?
+cat gene.txt | sed s'/\t/-/g'
+
+##### c. ¿Cómo cambiarías solo la primera aparición?
+cat gene.txt | sed s'/\t/-/'
+
+##### d. ¿Cómo buscarías todos los genes excepto el gen llamado DSTYK?
+cat gene.txt | grep DSTYK
+
+
+#### 2. 
+##### a. ¿Cuántas columnas y cuántos registros tiene este dataset?
+```{r}
+nrow(weather)
+ncol(weather)
+```
+Hay 15 columnas y 26115 registros.
+
+##### b. ¿Cuántos “origin” diferentes existen y para cada uno de ellos cuántos registros hay?
+```{r}
+table(weather$origin)
+```
+##### c. En LGA, ¿cuales fueron la mediana del wind_speed y media de pressure?
+```{r}
+LGA <- weather[weather$origin =="LGA",]
+mediana <-median(LGA$wind_speed, na.rm=T)
+media <-mean(LGA$pressure, na.rm=T)
+print(paste0("EL valor de la mediana es de ", mediana, " y el de la media es de ", media))
+
+```
+##### d. Después de eliminar los NA de la columna wind_gust, calcula para cada mes la media de wind_speed y wind_gust, y el número de casos. 
+```{r}
+weather_sinNA <- weather[complete.cases(weather),]
+media_windgust <- 0
+media_windspeed <-0
+
+for(a in 1:12){
+  windgust <- weather_sinNA[,c("month", "wind_gust")]
+  windspeed <- weather_sinNA[, c("month", "wind_speed")]
+  media_windgust[a] <- mean(windgust$month== a)
+  media_windspeed[a] <- mean(windspeed$month==a)
+  print(paste0("En el mes ", a, " el valor de la media de wind gust es ", media_windgust[a]," y el de la media de wind speed es ", media_windspeed[a]))
+  
+}
+print(paste0("El número de casos sin NA son ", nrow(weather_sinNA)))
+
+```
+
+
+
+#### 3. Intenta hacer este plot:
+
+##### a. Crea el plot anterior
+##### b. Crea una función que plotee el plot anterior.
+```{r}
+EWR <- weather[(weather$origin=="EWR"),]
+
+JFK <-weather[weather$origin=="JFK", ]
+mean(EWR["temp"], na.rm=T)
+
+mean(LGA$"temp", na.rm = T)
+mean(JFK$"temp", na.rm = T)
+medias <-0
+  media <- c(mean(EWR[columna], na.rm = T),mean(LGA[columna], na.rm = T),mean(JFK[columna], na.rm = T))
+
+plot_meteo <- function(data,columna,titulo, unidades)
+{
+
+  dat <- data.frame(data)
+  x <-dat[,columna] 
+  boxplot(x ~ dat$month, ylab = unidades, xlab= "Months",col="pink", main = titulo)
+
+  EWR_media<- mean(EWR$columna, na.rm = T)
+  LGA_media <-mean(LGA$columna, na.rm = T)
+  JFK_media <-mean(JFK$columna, na.rm = T)
+  medias <- c(EWR_media,LGA_media,JFK_media)
+  return(medias)
+  
+}
+plot_meteo(EWR,"temp","EWR", "ºC" )
+plot_meteo(LGA,"temp","LGA", "ºC" )
+plot_meteo(JFK,"temp","JFK", "ºC" )
+plot_meteo(EWR, "humid","Humedad", "Relative humidity")
+
+```
+
+#### 4. Eldía de tu cumpleaños:
+##### a. ¿Qué correlación tuvieron la temperatura y humedad en cada uno de los origin? Plotealo mediante puntos con ggplot.
+```{r}
+cumple_dia <- filter(weather, day == 19)
+cumple <- filter(cumple_dia, month ==11)
+cumple_EWR <- filter(cumple, origin=="EWR")
+cumple_LGA <- filter(cumple, origin=="LGA")
+cumple_JFK <- filter(cumple, origin=="JFK")
+
+ ggplot(data = EWR) + 
+  geom_point(mapping = aes(x = humid, y = temp)) + xlab("Humedad") + ylab("Temperatura")
+ cor(cumple_EWR$humid, cumple_EWR$temp)
+ ggplot(data = LGA) + 
+  geom_point(mapping = aes(x = humid, y = temp)) + xlab("Humedad") + ylab("Temperatura")
+ cor(cumple_LGA$humid, cumple_LGA$temp)
+ ggplot(data = JFK) + 
+  geom_point(mapping = aes(x = humid, y = temp)) + xlab("Humedad") + ylab("Temperatura")
+ cor(cumple_JFK$humid, cumple_JFK$temp)
+
+```
+
+
+##### b. Si comparas la temperatura en los origins JFK y LGA, ¿son estadísitcamente diferentes?¿Qué p-valor consigues?Plotea los boxplots.
+```{r}
+cumple_JFKyLGA <- filter(cumple, origin=="JFK" | origin == "LGA")
+boxplot(cumple_JFKyLGA$temp ~ cumple_JFKyLGA$origin)
+t.test(cumple_JFKyLGA$temp ~ cumple_JFKyLGA$origin)
+
+```
+Cómo podemos ver obtenemos un p valor de 0,5314, lo que nos indica que no son estadísticamente diferentes.
+
+#### 5. 
+#####a. ¿Cuál es el punto con FC (Fold change) más grande en valores absolutos?
+El punto con mayor FC en valores absolutos es el que se encuentra prácticamente en las coordenadas (-10,5).
+
+
+#####b. ¿Qué gen sobreexpresado es el más significativo?
+El gen sobreexpresado más significativo es el Csn1s2b
+
