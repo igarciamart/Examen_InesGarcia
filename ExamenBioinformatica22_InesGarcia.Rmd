@@ -155,6 +155,7 @@ El gen sobreexpresado más significativo es el Csn1s2b.
 
 #### 6. Ajunto mi url de git hub.
 
+https://github.com/igarciamart/Examen_InesGarcia.git
 
 ```{r}
 sessionInfo()
