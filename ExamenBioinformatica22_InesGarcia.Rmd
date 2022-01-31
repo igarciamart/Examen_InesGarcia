@@ -131,7 +131,7 @@ cumple_JFK <- filter(cumple, origin=="JFK")
  ggplot(data = cumple_LGA) + 
   geom_point(mapping = aes(x = humid, y = temp)) + xlab("Humedad") + ylab("Temperatura")
  cor(cumple_LGA$humid, cumple_LGA$temp)
- ggplot(data = cumple_LGA) + 
+ ggplot(data = cumple_JFK) + 
   geom_point(mapping = aes(x = humid, y = temp)) + xlab("Humedad") + ylab("Temperatura")
  cor(cumple_JFK$humid, cumple_JFK$temp)
 
