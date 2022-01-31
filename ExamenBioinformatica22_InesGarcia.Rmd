@@ -87,26 +87,61 @@ medias <-0
 
 plot_meteo <- function(data,columna,titulo, unidades)
 {
-
+  library(nycflights13)
+  weather <- nycflights13::weather
+  EWR1 <- weather[(weather$origin=="EWR"),]
+  LGA1 <- weather[weather$origin =="LGA",]
+  JFK1 <-weather[weather$origin=="JFK", ]
   dat <- data.frame(data)
   x <-dat[,columna] 
   boxplot(x ~ dat$month, ylab = unidades, xlab= "Months",col="pink", main = titulo)
-
-  EWR_media<- mean(EWR$columna, na.rm = T)
-  LGA_media <-mean(LGA$columna, na.rm = T)
-  JFK_media <-mean(JFK$columna, na.rm = T)
+  m <-mean(x[columna])
+  EWR_media<- mean(dat[,columna], na.rm = T)
+  LGA_media <-mean(LGA1[,columna], na.rm = T)
+  JFK_media <-mean(JFK1[,columna], na.rm = T)
   medias <- c(EWR_media,LGA_media,JFK_media)
-  return(medias)
+  return(EWR_media)
   
 }
-plot_meteo(EWR,"temp","EWR", "ºC" )
-plot_meteo(LGA,"temp","LGA", "ºC" )
-plot_meteo(JFK,"temp","JFK", "ºC" )
-plot_meteo(EWR, "humid","Humedad", "Relative humidity")
+plot_meteo <- function(data,origen,columna,titulo, unidades)
+{
+  dat <- data.frame(data)
+  EWR1 <- dat[(dat$origin=="EWR"),]
+  LGA1 <- dat[dat$origin =="LGA",]
+  JFK1 <-dat[dat$origin=="JFK", ]
+  
+  if(origen == "EWR"){
+    boxplot(EWR1[,columna] ~ EWR1$month, ylab = unidades, xlab= "Months",col="pink", main = titulo)
+  }else{
+    if(origen == "LGA"){
+      
+      boxplot(LGA1[,columna] ~ LGA1$month, ylab = unidades, xlab= "Months",col="pink", main = titulo)
+    }else{
+      if(origen == "JFK"){
+        boxplot(JFK1[,columna] ~ JFK1$month, ylab = unidades, xlab= "Months",col="pink", main = titulo)
+      }else{
+        boxplot(dat[,columna] ~ dat$month, ylab = unidades, xlab= "Months",col="pink", main = titulo)
+      }
+    }
+  }
+  
+  EWR_media<- mean(EWR1[,columna], na.rm = T)
+  LGA_media <-mean(LGA1[,columna], na.rm = T)
+  JFK_media <-mean(JFK1[,columna], na.rm = T)
+  medias <- c(EWR_media,LGA_media,JFK_media)
+  return(medias)
+}
+plot_meteo(weather, "EWR","temp","EWR", "ºC" )
+plot_meteo(weather, "LGA","temp","LGA", "ºC" )
+plot_meteo(weather, "JFK","temp","JFK", "ºC" )
+plot_meteo(weather, "todo", "humid","Humedad", "Relative humidity")
 
 ```
+He tenido que añadir un argumento más a la función para especificar el origen que quiero que me muestre, en caso de no querer que muestre un origen en concreto pondría cualquier otra palabra que no fuera el nombre de alguno de los aeropuertos y mostraría el boxplot de todo el data weather.
 
-#### 4. Eldía de tu cumpleaños:
+
+
+#### 4. El día de tu cumpleaños:
 ##### a. ¿Qué correlación tuvieron la temperatura y humedad en cada uno de los origin? Plotealo mediante puntos con ggplot.
 ```{r}
 cumple_dia <- filter(weather, day == 19)
@@ -128,15 +163,14 @@ cumple_JFK <- filter(cumple, origin=="JFK")
 ```
 
 
-##### b. Si comparas la temperatura en los origins JFK y LGA, ¿son estadísitcamente diferentes?¿Qué p-valor consigues?Plotea los boxplots.
+##### b. Si comparas la temperatura en los origins JFK y LGA, ¿son estadísticamente diferentes?¿Qué p-valor consigues?Plotea los boxplots.
 ```{r}
 cumple_JFKyLGA <- filter(cumple, origin=="JFK" | origin == "LGA")
 boxplot(cumple_JFKyLGA$temp ~ cumple_JFKyLGA$origin)
 t.test(cumple_JFKyLGA$temp ~ cumple_JFKyLGA$origin)
 
 ```
-Cómo podemos ver obtenemos un p valor de 0,5314, lo que nos indica que no son estadísticamente diferentes.
-
+Cómo podemos ver obtenemos un p valor de 0,5314, lo que nos indica que no hay diferencias estadísticamente significativas entre las entre las temperaturas en los aeropuertos LGA y JFK en el día de mi cumpleaños.
 #### 5. 
 #####a. ¿Cuál es el punto con FC (Fold change) más grande en valores absolutos?
 El punto con mayor FC en valores absolutos es el que se encuentra prácticamente en las coordenadas (-10,5).
