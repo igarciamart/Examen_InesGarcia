@@ -75,34 +75,7 @@ print(paste0("El número de casos sin NA son ", nrow(weather_sinNA)))
 ##### a. Crea el plot anterior
 ##### b. Crea una función que plotee el plot anterior.
 ```{r}
-EWR <- weather[(weather$origin=="EWR"),]
 
-JFK <-weather[weather$origin=="JFK", ]
-mean(EWR["temp"], na.rm=T)
-
-mean(LGA$"temp", na.rm = T)
-mean(JFK$"temp", na.rm = T)
-medias <-0
-  media <- c(mean(EWR[columna], na.rm = T),mean(LGA[columna], na.rm = T),mean(JFK[columna], na.rm = T))
-
-plot_meteo <- function(data,columna,titulo, unidades)
-{
-  library(nycflights13)
-  weather <- nycflights13::weather
-  EWR1 <- weather[(weather$origin=="EWR"),]
-  LGA1 <- weather[weather$origin =="LGA",]
-  JFK1 <-weather[weather$origin=="JFK", ]
-  dat <- data.frame(data)
-  x <-dat[,columna] 
-  boxplot(x ~ dat$month, ylab = unidades, xlab= "Months",col="pink", main = titulo)
-  m <-mean(x[columna])
-  EWR_media<- mean(dat[,columna], na.rm = T)
-  LGA_media <-mean(LGA1[,columna], na.rm = T)
-  JFK_media <-mean(JFK1[,columna], na.rm = T)
-  medias <- c(EWR_media,LGA_media,JFK_media)
-  return(EWR_media)
-  
-}
 plot_meteo <- function(data,origen,columna,titulo, unidades)
 {
   dat <- data.frame(data)
@@ -137,7 +110,7 @@ plot_meteo(weather, "JFK","temp","JFK", "ºC" )
 plot_meteo(weather, "todo", "humid","Humedad", "Relative humidity")
 
 ```
-He tenido que añadir un argumento más a la función para especificar el origen que quiero que me muestre, en caso de no querer que muestre un origen en concreto pondría cualquier otra palabra que no fuera el nombre de alguno de los aeropuertos y mostraría el boxplot de todo el data weather.
+He tenido que añadir un argumento más a la función para especificar el origen que quiero que me muestre, en caso de no querer que muestre un origen en concreto pondría cualquier palabra que no fuera el nombre de alguno de los aeropuertos y mostraría el boxplot de todo el data weather.
 
 
 
@@ -177,5 +150,14 @@ El punto con mayor FC en valores absolutos es el que se encuentra prácticamente
 
 
 #####b. ¿Qué gen sobreexpresado es el más significativo?
-El gen sobreexpresado más significativo es el Csn1s2b
+El gen sobreexpresado más significativo es el Csn1s2b.
+
+
+#### 6. Ajunto mi url de git hub.
+
+
+```{r}
+sessionInfo()
+```
+
 
