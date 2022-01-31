@@ -117,19 +117,21 @@ He tenido que añadir un argumento más a la función para especificar el origen
 #### 4. El día de tu cumpleaños:
 ##### a. ¿Qué correlación tuvieron la temperatura y humedad en cada uno de los origin? Plotealo mediante puntos con ggplot.
 ```{r}
-cumple_dia <- filter(weather, day == 19)
-cumple <- filter(cumple_dia, month ==11)
+EWR <- weather[(weather$origin=="EWR"),]
+JFK <-weather[weather$origin=="JFK", ]
+cumpledia <- filter(weather, day == 19)
+cumple <- filter(cumpledia, month ==11)
 cumple_EWR <- filter(cumple, origin=="EWR")
 cumple_LGA <- filter(cumple, origin=="LGA")
 cumple_JFK <- filter(cumple, origin=="JFK")
 
- ggplot(data = EWR) + 
+ ggplot(data = cumple_EWR) + 
   geom_point(mapping = aes(x = humid, y = temp)) + xlab("Humedad") + ylab("Temperatura")
  cor(cumple_EWR$humid, cumple_EWR$temp)
- ggplot(data = LGA) + 
+ ggplot(data = cumple_LGA) + 
   geom_point(mapping = aes(x = humid, y = temp)) + xlab("Humedad") + ylab("Temperatura")
  cor(cumple_LGA$humid, cumple_LGA$temp)
- ggplot(data = JFK) + 
+ ggplot(data = cumple_LGA) + 
   geom_point(mapping = aes(x = humid, y = temp)) + xlab("Humedad") + ylab("Temperatura")
  cor(cumple_JFK$humid, cumple_JFK$temp)
 
